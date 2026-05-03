@@ -54,7 +54,7 @@ jobs:
           $scanner = "${{ runner.temp }}\scanner\dotnet-sonarscanner.exe"
 
           & $scanner begin `
-            /k:"rodcferraz_InvestimentosCaixa" `
+            /k:"rodcferraz_DotnetSample" `
             /o:"rodcferraz" `
             /d:sonar.token="$env:SONAR_TOKEN" `
             /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
