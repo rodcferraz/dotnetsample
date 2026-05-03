@@ -24,13 +24,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cache Sonar packages
-        uses: actions/cache@v4
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
       - name: Cache Sonar scanner
         id: cache-sonar-scanner
         uses: actions/cache@v4
@@ -45,6 +38,11 @@ jobs:
         run: |
           New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory -Force
           dotnet tool install dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
+
+      - name: Add Coverlet
+        run: |
+          dotnet add DotnetSample.Testes/DotnetSample.Testes.csproj package coverlet.collector
+          dotnet add DotnetSample.Testes/DotnetSample.Testes.csproj package coverlet.msbuild
 
       - name: Build and analyze
         shell: pwsh
@@ -62,11 +60,13 @@ jobs:
           dotnet restore
           dotnet build
 
+          # Executar testes e gerar cobertura OpenCover
           dotnet test DotnetSample.Testes/DotnetSample.Testes.csproj `
             -c Release `
             /p:CollectCoverage=true `
             /p:CoverletOutputFormat=opencover `
-            /p:CoverletOutput=./coverage/
+            /p:CoverletOutput=./TestResults/coverage.opencover.xml `
+            /p:Exclude="[xunit.*]*"
 
           & $scanner end `
             /d:sonar.token="$env:SONAR_TOKEN"
