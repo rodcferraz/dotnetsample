@@ -7,9 +7,7 @@ public class OperacoesMatematicasTests
     [Fact]
     public void Somar_DeveRetornarSomaDosDoisValores()
     {
-        var sut = new OperacoesMatematicas();
-
-        var resultado = sut.Somar(5.5, 4.5);
+        var resultado = OperacoesMatematicas.Somar(5.5, 4.5);
 
         Assert.Equal(10.0, resultado, precision: 5);
     }
@@ -21,9 +19,7 @@ public class OperacoesMatematicasTests
     [InlineData(2.5, 1.25, 1.25)]
     public void Diminuir_DeveRetornarDiferencaDosDoisValores(double valor, double valorSubtrair, double esperado)
     {
-        var sut = new OperacoesMatematicas();
-
-        var resultado = sut.Diminuir(valor, valorSubtrair);
+        var resultado = OperacoesMatematicas.Diminuir(valor, valorSubtrair);
 
         Assert.Equal(esperado, resultado, precision: 5);
     }
@@ -35,9 +31,7 @@ public class OperacoesMatematicasTests
     [InlineData(0.0, 0.0, 0.0)]
     public void Somar_DeveTrabalharComValoresPositivosENegativos(double a, double b, double esperado)
     {
-        var sut = new OperacoesMatematicas();
-
-        var resultado = sut.Somar(a, b);
+        var resultado = OperacoesMatematicas.Somar(a, b);
 
         Assert.Equal(esperado, resultado, precision: 5);
     }
