@@ -1,0 +1,47 @@
+# k8s/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotnetsample-api
+  namespace: production
+  labels:
+    app: dotnetsample-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dotnetsample-api
+  template:
+    metadata:
+      labels:
+        app: dotnetsample-api
+    spec:
+      containers:
+      - name: app
+        image: ${DOCKERHUB_USERNAME}/${DOCKERHUB_REPO}:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+        envFrom:
+        - configMapRef: { name: products-api-config }
+        - secretRef:    { name: products-api-secret }
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
