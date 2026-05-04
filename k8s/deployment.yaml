@@ -23,9 +23,6 @@ spec:
         ports:
         - name: http
           containerPort: 8080
-        envFrom:
-        - configMapRef: { name: products-api-config }
-        - secretRef:    { name: products-api-secret }
         resources:
           requests:
             memory: "256Mi"
