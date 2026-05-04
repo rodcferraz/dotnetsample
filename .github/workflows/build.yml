@@ -125,27 +125,25 @@ jobs:
       with:
         images: ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}
         tags: |
-          type=sha,prefix={{date 'YYYYMMDD'}}-{{sha 'short'}},format=short
           type=raw,value=latest
-          type=raw,value=${{ github.run_number }}
 
     - name: Build and push with latest tag
       uses: docker/build-push-action@v5
       with:
         context: ./DotnetSample.Api
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+        tags: steps.meta.outputs.tags
 
     - name: Update deployment
       run: |
-        IMAGE_FULL="${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest"
-        sed -i "s|IMAGE_TAG_PLACEHOLDER|${IMAGE_FULL}|g" k8s/deployment.yaml
+        IMAGE_TAG="${{ steps.meta.outputs.tags }}"
+        sed -i "s|IMAGE_TAG_PLACEHOLDER|${IMAGE_TAG}|g" k8s/deployment.yaml
 
-        - name: Upload k8s manifests
-          uses: actions/upload-artifact@v4
-          with:
-            name: k8s-manifests
-            path: k8s/
+    - name: Upload k8s manifests
+      uses: actions/upload-artifact@v4
+      with:
+        name: k8s-manifests
+        path: k8s/
 
   deploy:
     name: Deploy app
