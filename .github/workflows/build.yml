@@ -132,7 +132,7 @@ jobs:
       with:
         context: ./DotnetSample.Api
         push: true
-        tags: steps.meta.outputs.tags
+        tags: ${{ steps.meta.outputs.tags }}
 
     - name: Update deployment
       run: |
